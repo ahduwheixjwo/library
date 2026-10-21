@@ -20,7 +20,7 @@ class BookController extends Controller
     public function edit($id) {
         $book = Book::findOrFail($id);
 
-        return view('edit.index', compact('book'));
+        return view('books.edit', compact('book'));
     }
 
     public function store(Request $request) {
@@ -34,6 +34,31 @@ class BookController extends Controller
         $validated['available_quantity'] = $validated['quantity'];
 
         Book::create($validated);
+
+        return redirect(route('books.index'));
+    }
+
+    public function update(Request $request, $id) {
+        $book = Book::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'quantity' => 'required|integer|min:0'
+        ]);
+
+        $validated['available_quantity'] = $validated['quantity'];
+
+        $book->update($validated);
+
+        return redirect(route('books.index'));
+    }
+
+    public function destroy($id) {
+        $book = Book::findOrFail($id);
+
+        $book->delete();
 
         return redirect(route('books.index'));
     }

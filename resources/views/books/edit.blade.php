@@ -22,28 +22,29 @@
         <div class="bg-white p-4 rounded shadow-sm">
             <h1>Edit</h1>
             <p class="text-secondary">Edit book details`</p>
-            <form action="/books" method="POST">
+            <form action="{{route('books.update', $book->id)}}" method="POST">
                 @csrf
+                @method('PUT')
                 <label for="name" class="form-label">Title</label>
-                <input type="text" class="form-control" name="title" value="{{old('title')}}">
+                <input type="text" class="form-control" name="title" value="{{old('title', $book->title)}}">
                 @error('title')
                     <div class="alet alert-danger">{{$message}}</div>
                 @enderror
             
                 <label for="author" class="form-label mt-3">Author</label>
-                <input type="text" class="form-control" name="author" value="{{old('author')}}">
+                <input type="text" class="form-control" name="author" value="{{old('author', $book->author)}}">
                 @error('author')
                     <div class="alet alert-danger">{{$message}}</div>
                 @enderror
                 
                 <label for="category" class="form-label mt-3">Category</label>
-                <input type="text" class="form-control" name="category" value="{{old('category')}}">
+                <input type="text" class="form-control" name="category" value="{{old('category', $book->category)}}">
                 @error('category')
                     <div class="alet alert-danger">{{$message}}</div>
                 @enderror
 
                 <label for="quantity" class="form-label mt-3">Quantity</label>
-                <input type="number" class="form-control" name="quantity" value="{{old('quantity')}}">
+                <input type="number" class="form-control" name="quantity" value="{{old('quantity', $book->quantity)}}">
                 @error('quantity')
                     <div class="alet alert-danger">{{$message}}</div>
                 @enderror

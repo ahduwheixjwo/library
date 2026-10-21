@@ -44,9 +44,13 @@
                             <td>{{$book->category}}</td>
                             <td>{{$book->quantity}}</td>
                             <td>{{$book->available_quantity}}</td>
-                            <td>
-                                <a href="/books/{{$book->id}}" class="btn btn-warning">Edit</a>
-                                <a href="" class="btn btn-danger">Delete</a>
+                            <td class="d-flex gap-3">
+                                <a href="{{route('books.edit', $book->id)}}" class="btn btn-warning">Edit</a>
+                                <form action="{{route('books.destroy', $book->id)}}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger">Delete</button>
+                                </form>
                             </td>
                         </tr>
                         @endforeach
