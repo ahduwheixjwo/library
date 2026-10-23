@@ -14,7 +14,13 @@
             <a href="{{route('books.index')}}" class="navbar-brand">Test</a>
             <div class="d-flex gap-3">
                 <a href="{{route('books.index')}}" class="nav-link">Books</a>
-                <a href="{{route('books.create')}}" class="nav-link">Create</a>
+                @if (Auth::check() && Auth::user()->role === 'admin')
+                    <a href="{{route('books.create')}}" class="nav-link">Create</a>
+                @endif
+                    <form action="{{route('logout')}}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-primary btn-sm">Logout</button>
+                    </form>
             </div>
         </div>
     </nav>
@@ -22,7 +28,17 @@
         <div class="rounded bg-white shadow-sm p-4">     
             <h1>Books</h1>
             <p class="text-secondary">Books listing</p>
-            <div class="table-responsive">
+            <form action="{{route('books.index')}}" method="GET">
+                @csrf
+                <div class="input-group">
+                    <input name="search" type="text" class="form-control" placeholder="Search book's title">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-outline-secondary">Search</button>
+                        <a href="{{route('books.index')}}" class="btn btn-outline-secondary">Clear</a>
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive mt-3">
                 <table class="table">
                     <thead>
                         <tr>
@@ -45,12 +61,20 @@
                             <td>{{$book->quantity}}</td>
                             <td>{{$book->available_quantity}}</td>
                             <td class="d-flex gap-3">
-                                <a href="{{route('books.edit', $book->id)}}" class="btn btn-warning">Edit</a>
-                                <form action="{{route('books.destroy', $book->id)}}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger">Delete</button>
-                                </form>
+                                @if (Auth::check() && Auth::user()->role === 'admin')
+                                    <a href="{{route('books.edit', $book->id)}}" class="btn btn-warning">Edit</a>
+                                    <form action="{{route('books.destroy', $book->id)}}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger">Delete</button>
+                                    </form>
+                                @else
+                                    <form action="{{route('books.borrow', $book->id)}}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="btn btn-primary btn-sm">Borrow</div>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                         @endforeach

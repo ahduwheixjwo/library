@@ -7,8 +7,14 @@ use App\Models\Book;
 
 class BookController extends Controller
 {
-    public function index() {
-        $books = Book::all();
+    public function index(Request $request) {
+        //$books = Book::all();
+
+        $search = $request->query('search');
+
+        $books = Book::when($search, function ($query, $search) {
+            return $query->where('title', 'like', '%' . $search . '%');
+        })->get();
 
         return view('index', compact('books'));
     }
@@ -35,7 +41,7 @@ class BookController extends Controller
 
         Book::create($validated);
 
-        return redirect(route('index'));
+        return redirect(route('books.index'));
     }
 
     public function update(Request $request, $id) {
@@ -52,7 +58,7 @@ class BookController extends Controller
 
         $book->update($validated);
 
-        return redirect(route('index'));
+        return redirect(route('books.index'));
     }
 
     public function destroy($id) {
@@ -60,6 +66,15 @@ class BookController extends Controller
 
         $book->delete();
 
-        return redirect(route('index'));
+        return redirect(route('books.index'));
+    }
+
+    public function borrow($id) {
+        $book = Book::findOrFail($id);
+
+        $book['available_quantity'] -= 1;
+        $book->update();
+
+        return redirect('books.index');
     }
 }

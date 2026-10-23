@@ -24,21 +24,31 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            return redirect->intended('index');
+            return redirect()->intended(route('books.index'));
         }
+
+        return back()->with('credentials', 'Credentials not match');
     }
 
     public function register(Request $request) {
         $validated = $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8'
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
         $user = User::create($validated);
-        Auth::login($user);
 
-        return redirect(route('auth.login'));
+        return redirect(route('login'));
+    }
+
+    public function logout(Request $request) {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect(route('login'));
     }
 }

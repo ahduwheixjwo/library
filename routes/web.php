@@ -4,15 +4,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\AuthController;
 
+Route::get('/', function() { return redirect(route('login'));});
 
-Route::resource('books', BookController::class);
+Route::middleware(['auth'])->group(function() {
+    Route::resource('books', BookController::class)->only('index');
+});
 
-/*Route::get('/books', [BookController::class, 'index'])->name('books.index');
-Route::get('/create', [BookController::class, 'create'])->name('books.create');
-Route::post('/books', [BookController::class, 'store'])->name('books.store');
-Route::get('/books/{id}', [BookController::class, 'edit'])->name('books.edit');
-Route::put('/books/{id}', [BookController::class, 'update'])->name('books.update');
-Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('books.destroy');*/
+Route::middleware(['auth', 'admin'])->group(function() {
+    Route::resource('books', BookController::class)->except('index');
+    Route::put('/books/borrow', [BookController::class, 'borrow'])->name('books.borrow');
+});
 
 // Auth
 
@@ -21,3 +22,5 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
