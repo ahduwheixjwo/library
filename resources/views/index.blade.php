@@ -72,7 +72,11 @@
                                     <form action="{{route('books.borrow', $book->id)}}" method="POST">
                                         @csrf
                                         @method('PUT')
-                                        <div class="btn btn-primary btn-sm">Borrow</div>
+                                        @if ($book->available_quantity === 0)
+                                            <button type="submit" class="btn btn-primary btn-sm disabled">Borrow</button>
+                                        @else
+                                            <button type="submit" class="btn btn-primary btn-sm">Borrow</button>
+                                        @endif
                                     </form>
                                 @endif
                             </td>

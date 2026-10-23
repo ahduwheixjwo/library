@@ -72,9 +72,8 @@ class BookController extends Controller
     public function borrow($id) {
         $book = Book::findOrFail($id);
 
-        $book['available_quantity'] -= 1;
-        $book->update();
+        $book->decrement('available_quantity');
 
-        return redirect('books.index');
+        return redirect(route('books.index'));
     }
 }

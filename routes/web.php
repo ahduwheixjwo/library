@@ -8,11 +8,11 @@ Route::get('/', function() { return redirect(route('login'));});
 
 Route::middleware(['auth'])->group(function() {
     Route::resource('books', BookController::class)->only('index');
+    Route::put('/books/{id}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
 });
 
 Route::middleware(['auth', 'admin'])->group(function() {
     Route::resource('books', BookController::class)->except('index');
-    Route::put('/books/borrow', [BookController::class, 'borrow'])->name('books.borrow');
 });
 
 // Auth
